@@ -133,6 +133,7 @@
 
 .bg-gradient-black-red {
   background: linear-gradient(to right, #000000, #ff0000, #000000);
+  color: white;
 }
 
 
