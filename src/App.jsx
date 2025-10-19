@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
-import { Shield, Lock, Eye, Users, CheckCircle, Menu, X, ArrowRight, Star, Globe, Zap } from 'lucide-react'
+import { Shield, Lock, Eye, Users, CheckCircle, Menu, X, ArrowRight, Star, Globe, Zap, Terminal, Code, Activity } from 'lucide-react'
 import './App.css'
 
 // Import images
@@ -19,30 +19,87 @@ import zenaegisLogo from './assets/logo.jpg'
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [matrixChars, setMatrixChars] = useState([])
+  const canvasRef = useRef(null)
 
   const heroSlides = [
     {
-      title: "Threat Detection & Response",
-      subtitle: "Advanced AI-powered threat detection to protect your digital assets 24/7"
+      title: ">> THREAT DETECTION ACTIVE <<",
+      subtitle: "AI-POWERED NEURAL NETWORKS MONITORING YOUR DIGITAL PERIMETER 24/7",
+      glitch: true
     },
     {
-      title: "Cybersecurity Excellence",
-      subtitle: "Comprehensive security solutions tailored for your business needs"
+      title: ">> CYBERSECURITY PROTOCOL <<",
+      subtitle: "QUANTUM-ENCRYPTED SECURITY MATRIX DEPLOYED FOR MAXIMUM PROTECTION",
+      glitch: false
     },
     {
-      title: "24/7 Security Monitoring",
-      subtitle: "Round-the-clock protection with real-time threat analysis and response"
+      title: ">> REAL-TIME MONITORING <<",
+      subtitle: "ADVANCED SENTINEL SYSTEMS ANALYZING 10M+ THREAT VECTORS PER SECOND",
+      glitch: true
     },
     {
-      title: "Advanced Protection Suite",
-      subtitle: "Next-generation security technologies to safeguard your digital infrastructure"
+      title: ">> PROTECTION SUITE ONLINE <<",
+      subtitle: "NEXT-GEN FIREWALL & INTRUSION DETECTION SYSTEMS FULLY OPERATIONAL",
+      glitch: false
     }
   ]
+
+  // Matrix rain effect
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+
+    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'
+    const charArray = chars.split('')
+    
+    const fontSize = 14
+    const columns = canvas.width / fontSize
+    const drops = Array(Math.floor(columns)).fill(1)
+
+    const draw = () => {
+      ctx.fillStyle = 'rgba(10, 10, 15, 0.05)'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      
+      ctx.fillStyle = '#00ff88'
+      ctx.font = `${fontSize}px monospace`
+      
+      drops.forEach((y, index) => {
+        const text = charArray[Math.floor(Math.random() * charArray.length)]
+        const x = index * fontSize
+        ctx.fillStyle = Math.random() > 0.98 ? '#ffffff' : '#00ff88'
+        ctx.fillText(text, x, y * fontSize)
+        
+        if (y * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[index] = 0
+        }
+        drops[index]++
+      })
+    }
+
+    const matrixInterval = setInterval(draw, 50)
+    
+    const handleResize = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+    
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      clearInterval(matrixInterval)
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
-    }, 4000) // Change slide every 4 seconds
+    }, 5000) // Change slide every 5 seconds
 
     return () => clearInterval(interval)
   }, [heroSlides.length])
@@ -115,29 +172,62 @@ function App() {
   ]
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {/* Matrix Rain Background */}
+      <canvas ref={canvasRef} className="matrix-rain" />
+      
+      {/* Cyber Grid Overlay */}
+      <div className="cyber-grid fixed inset-0 z-0 pointer-events-none opacity-20"></div>
+      
       {/* Header */}
-      <header className="fixed top-0 w-full bg-background/50 backdrop-blur-lg border-b border-border z-50">
-        <div className="container mx-auto px-4 py-4">
+      <header className="fixed top-0 w-full glassmorphism-card border-b border-border z-50">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/5 to-transparent animate-pulse"></div>
+        <div className="container mx-auto px-4 py-4 relative z-10">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <Terminal className="h-8 w-8 text-cyber-green pulse-glow" />
+                <div className="absolute -inset-1 bg-cyber-green/20 rounded-full blur-sm"></div>
+              </div>
               <span className="text-2xl font-bold">
-                <span className="text-white">Zen</span>
-                <span className="text-red-500">Aegis</span>
+                <span className="neon-text">Zen</span>
+                <span className="neon-text-red">Aegis</span>
               </span>
+              <div className="flex items-center space-x-1 text-xs text-cyber-green">
+                <Activity className="h-3 w-3 animate-pulse" />
+                <span>ONLINE</span>
+              </div>
             </div>
             
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#home" className="text-foreground hover:text-primary transition-colors">Home</a>
-              <a href="#about" className="text-foreground hover:text-primary transition-colors">About</a>
-              <a href="#services" className="text-foreground hover:text-primary transition-colors">Services</a>
-              <a href="#testimonials" className="text-foreground hover:text-primary transition-colors">Testimonials</a>
-              <a href="#contact" className="text-foreground hover:text-primary transition-colors">Contact</a>
+              <a href="#home" className="text-cyber-green hover:neon-text transition-all duration-300 relative group">
+                <span className="relative z-10">[ HOME ]</span>
+                <div className="absolute inset-0 bg-cyber-green/10 scale-0 group-hover:scale-100 transition-transform duration-300 rounded"></div>
+              </a>
+              <a href="#about" className="text-cyber-blue hover:neon-text-blue transition-all duration-300 relative group">
+                <span className="relative z-10">[ ABOUT ]</span>
+                <div className="absolute inset-0 bg-cyber-blue/10 scale-0 group-hover:scale-100 transition-transform duration-300 rounded"></div>
+              </a>
+              <a href="#services" className="text-cyber-green hover:neon-text transition-all duration-300 relative group">
+                <span className="relative z-10">[ SERVICES ]</span>
+                <div className="absolute inset-0 bg-cyber-green/10 scale-0 group-hover:scale-100 transition-transform duration-300 rounded"></div>
+              </a>
+              <a href="#testimonials" className="text-cyber-blue hover:neon-text-blue transition-all duration-300 relative group">
+                <span className="relative z-10">[ REVIEWS ]</span>
+                <div className="absolute inset-0 bg-cyber-blue/10 scale-0 group-hover:scale-100 transition-transform duration-300 rounded"></div>
+              </a>
+              <a href="#contact" className="text-cyber-red hover:neon-text-red transition-all duration-300 relative group">
+                <span className="relative z-10">[ CONTACT ]</span>
+                <div className="absolute inset-0 bg-cyber-red/10 scale-0 group-hover:scale-100 transition-transform duration-300 rounded"></div>
+              </a>
             </nav>
 
             <div className="hidden md:flex items-center space-x-4">
-              <a href="#contact" className="text-foreground hover:text-primary transition-colors"><Button variant="outline">Contact Us</Button></a>
+              <Button className="cyber-button px-6 py-2">
+                <Code className="h-4 w-4 mr-2" />
+                CONNECT
+              </Button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -151,16 +241,32 @@ function App() {
 
           {/* Mobile Navigation */}
           {isMenuOpen && (
-            <nav className="md:hidden mt-4 pb-4 border-t border-border pt-4">
+            <nav className="md:hidden mt-4 pb-4 border-t border-cyber-green/30 pt-4 glassmorphism-card">
               <div className="flex flex-col space-y-4">
-                <a href="#home" className="text-foreground hover:text-primary transition-colors">Home</a>
-                <a href="#about" className="text-foreground hover:text-primary transition-colors">About</a>
-                <a href="#services" className="text-foreground hover:text-primary transition-colors">Services</a>
-                <a href="#testimonials" className="text-foreground hover:text-primary transition-colors">Testimonials</a>
-                <a href="#contact" className="text-foreground hover:text-primary transition-colors">Contact</a>
+                <a href="#home" className="text-cyber-green hover:neon-text transition-colors font-mono p-2 rounded border border-transparent hover:border-cyber-green/30">
+                  [ HOME ]
+                </a>
+                <a href="#about" className="text-cyber-blue hover:neon-text-blue transition-colors font-mono p-2 rounded border border-transparent hover:border-cyber-blue/30">
+                  [ ABOUT ]
+                </a>
+                <a href="#services" className="text-cyber-green hover:neon-text transition-colors font-mono p-2 rounded border border-transparent hover:border-cyber-green/30">
+                  [ SERVICES ]
+                </a>
+                <a href="#testimonials" className="text-cyber-blue hover:neon-text-blue transition-colors font-mono p-2 rounded border border-transparent hover:border-cyber-blue/30">
+                  [ REVIEWS ]
+                </a>
+                <a href="#contact" className="text-cyber-red hover:neon-text-red transition-colors font-mono p-2 rounded border border-transparent hover:border-cyber-red/30">
+                  [ CONTACT ]
+                </a>
                 <div className="flex flex-col space-y-2 pt-4">
-                  <Button variant="outline" className="w-full">Get Quote</Button>
-                  <Button className="w-full">Contact Us</Button>
+                  <Button className="w-full cyber-button">
+                    <Terminal className="mr-2 h-4 w-4" />
+                    ESTABLISH LINK
+                  </Button>
+                  <Button className="w-full button">
+                    <Shield className="mr-2 h-4 w-4" />
+                    SECURE CONNECT
+                  </Button>
                 </div>
               </div>
             </nav>
@@ -173,62 +279,124 @@ function App() {
         <iframe 
           src="https://cybermap.kaspersky.com/en/widget/dynamic/dark" 
           frameBorder="0" 
-          className="absolute inset-0 w-full h-full"
+          className="absolute inset-0 w-full h-full opacity-70"
           allowFullScreen
         ></iframe>
-        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-background"></div>
         
-        <div className="relative z-10 container mx-auto px-4 text-center text-white">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight transition-all duration-1000 ease-in-out">
+        {/* Animated lines and particles */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-64 h-px bg-gradient-to-r from-transparent via-cyber-green to-transparent animate-pulse"></div>
+          <div className="absolute top-3/4 right-1/4 w-48 h-px bg-gradient-to-r from-transparent via-cyber-blue to-transparent animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/6 w-32 h-px bg-gradient-to-r from-transparent via-cyber-red to-transparent animate-pulse delay-500"></div>
+        </div>
+        
+        <div className="relative z-10 container mx-auto px-4 text-center">
+          <div className="mb-8">
+            <div className="inline-flex items-center space-x-2 bg-cyber-green/10 border border-cyber-green/30 rounded-full px-4 py-2 mb-6">
+              <Activity className="h-4 w-4 text-cyber-green animate-pulse" />
+              <span className="text-cyber-green text-sm font-mono">SYSTEM STATUS: OPERATIONAL</span>
+            </div>
+          </div>
+          
+          <h1 className={`text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight transition-all duration-1000 ease-in-out font-mono ${
+            heroSlides[currentSlide].glitch ? 'glitch neon-text' : 'neon-text-blue'
+          }`}>
             {heroSlides[currentSlide].title}
           </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-gray-200 transition-all duration-1000 ease-in-out">
+          
+          <p className="text-lg md:text-xl mb-8 max-w-4xl mx-auto text-cyber-green/80 transition-all duration-1000 ease-in-out font-mono">
             {heroSlides[currentSlide].subtitle}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="text-lg px-8 py-6 button">
-              Discover More <ArrowRight className="ml-2 h-5 w-5" />
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button size="lg" className="button text-lg px-8 py-6 relative overflow-hidden group">
+              <span className="relative z-10 flex items-center">
+                <Shield className="mr-2 h-5 w-5" />
+                ENGAGE PROTOCOL
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </span>
             </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-white/10 border-white/30 text-white hover:bg-white/20">
-              Get Started
+            <Button size="lg" className="cyber-button text-lg px-8 py-6">
+              <Terminal className="mr-2 h-5 w-5" />
+              ACCESS SYSTEMS
             </Button>
+          </div>
+          
+          {/* Slide indicators */}
+          <div className="flex justify-center space-x-2 mt-12">
+            {heroSlides.map((_, index) => (
+              <button
+                key={index}
+                className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${
+                  index === currentSlide 
+                    ? 'border-cyber-green bg-cyber-green shadow-lg shadow-cyber-green/50' 
+                    : 'border-cyber-green/30 bg-transparent hover:border-cyber-green/60'
+                }`}
+                onClick={() => setCurrentSlide(index)}
+              />
+            ))}
           </div>
         </div>
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-20 bg-transparent">
-        <div className="container mx-auto px-4">
+      <section id="services" className="py-20 bg-gradient-cyber relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
-            <Badge className="mb-4">Our Services</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              We Shape the Perfect <br />
-              Security Solutions <span className="text-primary">.</span>
+            <div className="inline-flex items-center space-x-2 bg-cyber-blue/10 border border-cyber-blue/30 rounded-full px-4 py-2 mb-6">
+              <Code className="h-4 w-4 text-cyber-blue" />
+              <span className="text-cyber-blue text-sm font-mono">[ SECURITY PROTOCOLS ]</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 font-mono">
+              <span className="neon-text">ADVANCED CYBER</span><br />
+              <span className="neon-text-blue">DEFENSE MATRIX</span>
+              <span className="neon-text-red">.</span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              We are committed to providing comprehensive cybersecurity services to our clients with the full potential of our expert team.
+            <p className="text-xl text-cyber-green/70 max-w-3xl mx-auto font-mono">
+              {`>> DEPLOYING MILITARY-GRADE SECURITY PROTOCOLS WITH QUANTUM-LEVEL ENCRYPTION AND AI-POWERED THREAT ANALYSIS <<`}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
-              <Card key={index} className="group hover:shadow-lg transition-all duration-300 overflow-hidden glassmorphism-card">
+              <Card key={index} className="group hover:shadow-lg transition-all duration-500 overflow-hidden glassmorphism-card relative">
+                {/* Animated border */}
+                <div className="absolute inset-0 bg-gradient-to-r from-cyber-green via-cyber-blue to-cyber-red opacity-0 group-hover:opacity-30 transition-opacity duration-500 rounded-lg blur-sm"></div>
+                
                 <div 
-                  className="h-48 bg-cover bg-center relative"
+                  className="h-48 bg-cover bg-center relative overflow-hidden"
                   style={{ backgroundImage: `url(${service.image})` }}
                 >
-                  <div className="absolute inset-0 bg-primary/80 group-hover:bg-primary/70 transition-colors"></div>
+                  <div className="absolute inset-0 bg-gradient-to-b from-cyber-green/20 to-cyber-blue/40 group-hover:from-cyber-red/30 group-hover:to-cyber-green/50 transition-all duration-500"></div>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <service.icon className="h-16 w-16 text-white" />
+                    <div className="relative">
+                      <service.icon className="h-16 w-16 text-white drop-shadow-lg group-hover:text-cyber-green transition-colors duration-300" />
+                      <div className="absolute -inset-2 bg-cyber-green/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
                   </div>
+                  
+                  {/* Scan line effect */}
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyber-green to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-pulse"></div>
                 </div>
-                <CardHeader>
-                  <CardTitle className="text-xl">{service.title}</CardTitle>
+                
+                <CardHeader className="relative">
+                  <CardTitle className="text-xl font-mono text-cyber-green group-hover:neon-text transition-all duration-300">
+                    {`>> ${service.title.toUpperCase()}`}
+                  </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base">
+                
+                <CardContent className="relative">
+                  <CardDescription className="text-base text-cyber-blue/80 font-mono">
                     {service.description}
                   </CardDescription>
+                  
+                  {/* Status indicator */}
+                  <div className="mt-4 flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-cyber-green rounded-full animate-pulse"></div>
+                    <span className="text-xs text-cyber-green font-mono">STATUS: ACTIVE</span>
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -237,63 +405,129 @@ function App() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20">
-        <div className="container mx-auto px-4">
+      <section id="about" className="py-20 bg-gradient-cyber-red relative">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
+            <div className="relative">
               <div 
-                className="h-96 bg-cover bg-center rounded-lg shadow-lg"
+                className="h-96 bg-cover bg-center rounded-lg shadow-2xl glassmorphism-card overflow-hidden"
                 style={{ backgroundImage: `url(${networkBg})` }}
               >
-                <div className="h-full bg-primary/20 rounded-lg flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <Shield className="h-24 w-24 mx-auto mb-4" />
-                    <h3 className="text-2xl font-bold">Trusted Security</h3>
+                <div className="h-full bg-gradient-to-b from-cyber-green/20 to-cyber-blue/30 rounded-lg flex items-center justify-center relative">
+                  {/* Scanning lines */}
+                  <div className="absolute top-0 left-0 w-full h-1 bg-cyber-green animate-pulse"></div>
+                  <div className="absolute bottom-0 left-0 w-full h-1 bg-cyber-blue animate-pulse delay-500"></div>
+                  
+                  <div className="text-center text-white relative z-10">
+                    <div className="relative inline-block">
+                      <Shield className="h-24 w-24 mx-auto mb-4 text-cyber-green drop-shadow-lg" />
+                      <div className="absolute -inset-4 bg-cyber-green/20 rounded-full blur-lg animate-pulse"></div>
+                    </div>
+                    <h3 className="text-2xl font-bold font-mono neon-text">SECURE PERIMETER</h3>
+                    <p className="text-cyber-blue font-mono text-sm mt-2">[ ENCRYPTION LEVEL: QUANTUM ]</p>
                   </div>
+                  
+                  {/* Corner brackets */}
+                  <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-cyber-green"></div>
+                  <div className="absolute top-4 right-4 w-8 h-8 border-r-2 border-t-2 border-cyber-green"></div>
+                  <div className="absolute bottom-4 left-4 w-8 h-8 border-l-2 border-b-2 border-cyber-green"></div>
+                  <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-cyber-green"></div>
                 </div>
               </div>
             </div>
+            
             <div>
-              <Badge className="mb-4">About ZenAegis</Badge>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                We are the best agency for cybersecurity <span className="text-primary">.</span>
+              <div className="inline-flex items-center space-x-2 bg-cyber-red/10 border border-cyber-red/30 rounded-full px-4 py-2 mb-6">
+                <Shield className="h-4 w-4 text-cyber-red" />
+                <span className="text-cyber-red text-sm font-mono">[ ABOUT ZENAEGIS ]</span>
+              </div>
+              
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 font-mono">
+                <span className="neon-text-red">ELITE CYBER</span><br />
+                <span className="neon-text">SECURITY AGENCY</span>
+                <span className="neon-text-blue">.</span>
               </h2>
-              <p className="text-lg text-muted-foreground mb-6">
-                We will continue to provide the best possible service with years of experience, providing exceptional cybersecurity solutions to our customers.
+              
+              <p className="text-lg text-cyber-green/80 mb-6 font-mono">
+                {`>> MILITARY-GRADE CYBERSECURITY PROTOCOLS WITH YEARS OF COMBAT-TESTED EXPERIENCE IN DIGITAL WARFARE AND THREAT NEUTRALIZATION <<`}
               </p>
+              
               <div className="space-y-4 mb-8">
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-accent" />
-                  <span>Advanced Threat Detection</span>
+                <div className="flex items-center space-x-3 group">
+                  <div className="relative">
+                    <CheckCircle className="h-5 w-5 text-cyber-green" />
+                    <div className="absolute -inset-1 bg-cyber-green/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </div>
+                  <span className="text-cyber-blue font-mono">[✓] AI-POWERED THREAT DETECTION</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-accent" />
-                  <span>24/7 Security Monitoring</span>
+                <div className="flex items-center space-x-3 group">
+                  <div className="relative">
+                    <CheckCircle className="h-5 w-5 text-cyber-green" />
+                    <div className="absolute -inset-1 bg-cyber-green/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </div>
+                  <span className="text-cyber-blue font-mono">[✓] 24/7 SENTINEL MONITORING</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-accent" />
-                  <span>Rapid Incident Response</span>
+                <div className="flex items-center space-x-3 group">
+                  <div className="relative">
+                    <CheckCircle className="h-5 w-5 text-cyber-green" />
+                    <div className="absolute -inset-1 bg-cyber-green/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </div>
+                  <span className="text-cyber-blue font-mono">[✓] QUANTUM INCIDENT RESPONSE</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-accent" />
-                  <span>Expert Security Consulting</span>
+                <div className="flex items-center space-x-3 group">
+                  <div className="relative">
+                    <CheckCircle className="h-5 w-5 text-cyber-green" />
+                    <div className="absolute -inset-1 bg-cyber-green/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </div>
+                  <span className="text-cyber-blue font-mono">[✓] EXPERT SECURITY PROTOCOLS</span>
                 </div>
               </div>
-              <Button size="lg">
-                Discover More <ArrowRight className="ml-2 h-5 w-5" />
+              
+              <Button size="lg" className="cyber-button">
+                <Eye className="mr-2 h-5 w-5" />
+                ANALYZE SYSTEMS
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-black-red text-primary-foreground">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-gradient-black-red text-primary-foreground relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyber-red to-transparent opacity-50"></div>
+          <div className="absolute bottom-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyber-green to-transparent opacity-50"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-12">
+            <h3 className="text-2xl font-mono neon-text-red mb-2">[ SYSTEM STATISTICS ]</h3>
+            <p className="text-cyber-green/70 font-mono">REAL-TIME OPERATIONAL DATA</p>
+          </div>
+          
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {stats.map((stat, index) => (
-              <div key={index}>
-                <div className="text-4xl md:text-5xl font-bold mb-2">{stat.number}</div>
-                <div className="text-lg opacity-90">{stat.label}</div>
+              <div key={index} className="relative group">
+                <div className="glassmorphism-card p-6 h-full">
+                  {/* Corner brackets */}
+                  <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-cyber-green opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-cyber-green opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-cyber-green opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-cyber-green opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                  
+                  <div className="text-4xl md:text-5xl font-bold mb-2 font-mono neon-text group-hover:glitch">
+                    {stat.number}
+                  </div>
+                  <div className="text-sm text-cyber-blue font-mono opacity-90">
+                    {stat.label.toUpperCase()}
+                  </div>
+                  
+                  {/* Status indicator */}
+                  <div className="absolute top-4 right-4">
+                    <div className="w-2 h-2 bg-cyber-green rounded-full animate-pulse"></div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -301,107 +535,223 @@ function App() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 bg-transparent">
-        <div className="container mx-auto px-4">
+      <section id="testimonials" className="py-20 bg-gradient-cyber relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/30"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
-            <Badge className="mb-4">Testimonials</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              What Our Clients Say <span className="text-primary">.</span>
+            <div className="inline-flex items-center space-x-2 bg-cyber-green/10 border border-cyber-green/30 rounded-full px-4 py-2 mb-6">
+              <Users className="h-4 w-4 text-cyber-green" />
+              <span className="text-cyber-green text-sm font-mono">[ CLIENT TESTIMONIALS ]</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 font-mono">
+              <span className="neon-text-blue">SECURITY VERIFIED</span><br />
+              <span className="neon-text">CLIENT REPORTS</span>
+              <span className="neon-text-red">.</span>
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="text-center glassmorphism-card">
-                <CardHeader>
+              <Card key={index} className="text-center glassmorphism-card relative group">
+                {/* Animated border */}
+                <div className="absolute inset-0 bg-gradient-to-r from-cyber-green/20 to-cyber-blue/20 opacity-0 group-hover:opacity-50 transition-opacity duration-500 rounded-lg"></div>
+                
+                <CardHeader className="relative">
+                  {/* Security rating display */}
                   <div className="flex justify-center mb-4">
+                    <div className="bg-cyber-green/10 border border-cyber-green/30 rounded-full px-3 py-1">
+                      <span className="text-cyber-green font-mono text-sm">
+                        SECURITY RATING: {testimonial.rating}/5
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-center mb-4 space-x-1">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                      <Star key={i} className="h-4 w-4 text-cyber-green fill-current" />
                     ))}
                   </div>
-                  <CardDescription className="text-base italic">
-                    "{testimonial.text}"
+                  
+                  <CardDescription className="text-base font-mono text-cyber-blue/80">
+                    <span className="text-cyber-green">"</span>
+                    {testimonial.text}
+                    <span className="text-cyber-green">"</span>
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <CardTitle className="text-lg">{testimonial.name}</CardTitle>
-                  <p className="text-muted-foreground">{testimonial.company}</p>
+                
+                <CardContent className="relative">
+                  <CardTitle className="text-lg font-mono text-cyber-green">
+                    {`>> ${testimonial.name.toUpperCase()}`}
+                  </CardTitle>
+                  <p className="text-cyber-blue/70 font-mono text-sm">
+                    [ {testimonial.company.toUpperCase()} ]
+                  </p>
+                  
+                  {/* Status indicator */}
+                  <div className="absolute bottom-4 right-4 flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-cyber-green rounded-full animate-pulse"></div>
+                    <span className="text-xs text-cyber-green font-mono">VERIFIED</span>
+                  </div>
                 </CardContent>
+                
+                {/* Corner brackets */}
+                <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-cyber-green/50 group-hover:border-cyber-green transition-colors"></div>
+                <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-cyber-green/50 group-hover:border-cyber-green transition-colors"></div>
+                <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-cyber-green/50 group-hover:border-cyber-green transition-colors"></div>
+                <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-cyber-green/50 group-hover:border-cyber-green transition-colors"></div>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-black-red text-primary-foreground">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Let's Get Your Security <br />
-            Started!
-          </h2>
-          <p className="text-xl mb-8 opacity-90">
-            Contact us today for a comprehensive security assessment and customized protection plan.
-          </p>
-          <Button size="lg" variant="secondary" className="text-lg px-8 py-6">
-            Contact with Us <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
+      <section className="py-20 bg-gradient-black-red text-primary-foreground relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/3 left-1/4 w-32 h-32 border border-cyber-green/20 rounded-full animate-pulse"></div>
+          <div className="absolute bottom-1/3 right-1/4 w-24 h-24 border border-cyber-blue/20 rounded-full animate-pulse delay-1000"></div>
+          <div className="absolute top-1/4 right-1/6 w-16 h-16 border border-cyber-red/20 rounded-full animate-pulse delay-500"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <div className="glassmorphism-card p-12 max-w-4xl mx-auto">
+            {/* Alert indicator */}
+            <div className="inline-flex items-center space-x-2 bg-cyber-red/20 border border-cyber-red/40 rounded-full px-4 py-2 mb-8">
+              <Activity className="h-4 w-4 text-cyber-red animate-pulse" />
+              <span className="text-cyber-red text-sm font-mono">[ INITIATE SECURE CONNECTION ]</span>
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 font-mono">
+              <span className="neon-text-red">ACTIVATE DEFENSE</span> <br />
+              <span className="neon-text">PROTOCOL NOW</span>
+              <span className="neon-text-blue">!</span>
+            </h2>
+            
+            <p className="text-xl mb-8 opacity-90 font-mono text-cyber-green/80">
+              {`>> INITIATE COMPREHENSIVE SECURITY SCAN AND DEPLOY CUSTOM PROTECTION MATRIX FOR YOUR DIGITAL INFRASTRUCTURE <<`}
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button size="lg" className="button text-lg px-8 py-6">
+                <Terminal className="mr-2 h-5 w-5" />
+                ESTABLISH SECURE LINK
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button size="lg" className="cyber-button text-lg px-8 py-6">
+                <Shield className="mr-2 h-5 w-5" />
+                EMERGENCY RESPONSE
+              </Button>
+            </div>
+            
+            {/* Corner brackets */}
+            <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-cyber-green/50"></div>
+            <div className="absolute top-4 right-4 w-8 h-8 border-r-2 border-t-2 border-cyber-green/50"></div>
+            <div className="absolute bottom-4 left-4 w-8 h-8 border-l-2 border-b-2 border-cyber-green/50"></div>
+            <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-cyber-green/50"></div>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer id="contact" className="bg-card border-t border-border py-16">
-        <div className="container mx-auto px-4">
+      <footer id="contact" className="bg-gradient-cyber relative py-16">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        
+        {/* Animated background lines */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyber-green to-transparent animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyber-blue to-transparent animate-pulse delay-1000"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <span className="text-2xl font-bold text-foreground">ZenAegis</span>
+            <div className="glassmorphism-card p-6">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="relative">
+                  <Terminal className="h-6 w-6 text-cyber-green" />
+                  <div className="absolute -inset-1 bg-cyber-green/20 rounded-full blur-sm animate-pulse"></div>
+                </div>
+                <span className="text-2xl font-bold font-mono">
+                  <span className="neon-text">Zen</span>
+                  <span className="neon-text-red">Aegis</span>
+                </span>
               </div>
-              <p className="text-muted-foreground mb-4">
-                We are ZenAegis. We provide comprehensive cybersecurity solutions including threat detection, incident response, security consulting, and more.
+              <p className="text-cyber-blue/80 mb-4 font-mono text-sm">
+                {`>> ELITE CYBERSECURITY FORCE PROVIDING QUANTUM-ENCRYPTED PROTECTION WITH AI-POWERED THREAT NEUTRALIZATION SYSTEMS <<`}
               </p>
-              <div className="flex space-x-4">
-                <Button variant="outline" size="sm">Facebook</Button>
-                <Button variant="outline" size="sm">LinkedIn</Button>
-                <Button variant="outline" size="sm">Twitter</Button>
+              <div className="flex space-x-2">
+                <Button className="cyber-button text-xs px-3 py-1">
+                  <Globe className="h-3 w-3 mr-1" />
+                  FACEBOOK
+                </Button>
+                <Button className="cyber-button text-xs px-3 py-1">
+                  <Users className="h-3 w-3 mr-1" />
+                  LINKEDIN
+                </Button>
+                <Button className="cyber-button text-xs px-3 py-1">
+                  <Activity className="h-3 w-3 mr-1" />
+                  TWITTER
+                </Button>
               </div>
             </div>
             
-            <div>
-              <h3 className="font-semibold mb-4">Services</h3>
-              <div className="space-y-2 text-muted-foreground">
-                <div>Threat Detection</div>
-                <div>Incident Response</div>
-                <div>Security Consulting</div>
-                <div>Security Training</div>
-                <div>Compliance Management</div>
-                <div>Penetration Testing</div>
+            <div className="glassmorphism-card p-6">
+              <h3 className="font-semibold mb-4 font-mono text-cyber-green">[ SECURITY SERVICES ]</h3>
+              <div className="space-y-2 text-cyber-blue/80 text-sm font-mono">
+                <div className="hover:text-cyber-green transition-colors cursor-pointer">• THREAT DETECTION</div>
+                <div className="hover:text-cyber-green transition-colors cursor-pointer">• INCIDENT RESPONSE</div>
+                <div className="hover:text-cyber-green transition-colors cursor-pointer">• SECURITY CONSULTING</div>
+                <div className="hover:text-cyber-green transition-colors cursor-pointer">• SECURITY TRAINING</div>
+                <div className="hover:text-cyber-green transition-colors cursor-pointer">• COMPLIANCE MGMT</div>
+                <div className="hover:text-cyber-green transition-colors cursor-pointer">• PENETRATION TESTING</div>
               </div>
             </div>
             
-            <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <div className="space-y-2 text-muted-foreground">
-                <div>About Us</div>
-                <div>Our Team</div>
-                <div>Careers</div>
-                <div>Blog</div>
-                <div>Contact</div>
+            <div className="glassmorphism-card p-6">
+              <h3 className="font-semibold mb-4 font-mono text-cyber-blue">[ ORGANIZATION ]</h3>
+              <div className="space-y-2 text-cyber-green/80 text-sm font-mono">
+                <div className="hover:text-cyber-blue transition-colors cursor-pointer">• ABOUT ZENAEGIS</div>
+                <div className="hover:text-cyber-blue transition-colors cursor-pointer">• CYBER TEAM</div>
+                <div className="hover:text-cyber-blue transition-colors cursor-pointer">• JOIN FORCE</div>
+                <div className="hover:text-cyber-blue transition-colors cursor-pointer">• INTEL BLOG</div>
+                <div className="hover:text-cyber-blue transition-colors cursor-pointer">• CONTACT HQ</div>
               </div>
             </div>
             
-            <div>
-              <h3 className="font-semibold mb-4">Contact Info</h3>
-              <div className="space-y-2 text-muted-foreground">
-                <div>📧 info@zenaegis.com</div>
-                <div>📞 +1 (555) 123-4567</div>
-                <div>📍 123 Security St, Cyber City, CC 12345</div>
-                <div>🕒 24/7 Support Available</div>
+            <div className="glassmorphism-card p-6">
+              <h3 className="font-semibold mb-4 font-mono text-cyber-red">[ SECURE CHANNELS ]</h3>
+              <div className="space-y-3 text-cyber-green/80 text-sm font-mono">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-cyber-green rounded-full animate-pulse"></div>
+                  <span>ENCRYPTED@ZENAEGIS.COM</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-cyber-blue rounded-full animate-pulse"></div>
+                  <span>+1 (555) CYBER-SECURE</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-cyber-red rounded-full animate-pulse"></div>
+                  <span>CLASSIFIED LOCATION</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-cyber-green rounded-full animate-pulse"></div>
+                  <span>24/7 SENTINEL MODE</span>
+                </div>
               </div>
             </div>
           </div>
           
-          <div className="border-t border-border mt-12 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 ZenAegis. All rights reserved. | Privacy Policy | Terms of Service</p>
+          <div className="border-t border-cyber-green/30 mt-12 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <div className="text-cyber-blue/70 font-mono text-sm mb-4 md:mb-0">
+                <span className="text-cyber-green">©</span> 2024 ZENAEGIS SECURITY FORCE. ALL PROTOCOLS SECURED.
+              </div>
+              <div className="flex space-x-6 text-cyber-green/60 font-mono text-xs">
+                <span className="hover:text-cyber-green transition-colors cursor-pointer">PRIVACY PROTOCOL</span>
+                <span className="hover:text-cyber-green transition-colors cursor-pointer">TERMS OF SERVICE</span>
+                <span className="hover:text-cyber-green transition-colors cursor-pointer">SECURITY POLICY</span>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
