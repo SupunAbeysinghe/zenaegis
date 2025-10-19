@@ -723,19 +723,19 @@ function App() {
               <div className="space-y-3 text-cyber-green/80 text-sm font-mono">
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-cyber-green rounded-full animate-pulse"></div>
-                  <span>ENCRYPTED@ZENAEGIS.COM</span>
+                  <span>info@zenaegislabs.com</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-cyber-blue rounded-full animate-pulse"></div>
-                  <span>+1 (555) CYBER-SECURE</span>
+                  <span>+94 71 922 9098</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-cyber-red rounded-full animate-pulse"></div>
-                  <span>CLASSIFIED LOCATION</span>
+                  <span>Colombo,Sri Lanka.</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-cyber-green rounded-full animate-pulse"></div>
-                  <span>24/7 SENTINEL MODE</span>
+                  <span></span>
                 </div>
               </div>
             </div>
@@ -744,7 +744,7 @@ function App() {
           <div className="border-t border-cyber-green/30 mt-12 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="text-cyber-blue/70 font-mono text-sm mb-4 md:mb-0">
-                <span className="text-cyber-green">©</span> 2024 ZENAEGIS SECURITY FORCE. ALL PROTOCOLS SECURED.
+                <span className="text-cyber-green">©</span> 2025 ZENAEGIS SECURITY FORCE. ALL PROTOCOLS SECURED.
               </div>
               <div className="flex space-x-6 text-cyber-green/60 font-mono text-xs">
                 <span className="hover:text-cyber-green transition-colors cursor-pointer">PRIVACY PROTOCOL</span>
