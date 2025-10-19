@@ -12,7 +12,8 @@ Instead of responses appearing instantly, you'll now see:
 2. 🤔 "Thinking..." loading indicator  
 3. ⌨️ **AI response types out character by character**
 4. 📝 Cursor blinks at the end during typing
-5. ✅ Final formatted message with bold text
+5. 📜 **Chat automatically scrolls down** during typing
+6. ✅ Final formatted message with bold text
 
 ---
 
@@ -23,6 +24,8 @@ Instead of responses appearing instantly, you'll now see:
 - **Animated cursor** (`|`) that pulses during typing
 - **Bold formatting** applied in real-time as text appears
 - **Smooth character-by-character** reveal
+- **Auto-scrolling** keeps typing text in view at all times
+- **Smooth scroll behavior** for better visual experience
 - **Automatic cleanup** when typing completes
 
 ### **User Experience Flow:**
@@ -102,7 +105,9 @@ User Message → API Call → "Thinking..." → Typing Effect → Final Message
 ### **Performance Optimized:**
 - **Efficient re-renders**: Only typing message updates
 - **Memory cleanup**: Timeouts cleared properly
-- **Smooth scrolling**: Auto-scrolls during typing
+- **Smart auto-scrolling**: Follows typing progress automatically
+- **Smooth scroll behavior**: Uses browser-native smooth scrolling
+- **Scroll fallback**: Ensures compatibility across all browsers
 
 ---
 

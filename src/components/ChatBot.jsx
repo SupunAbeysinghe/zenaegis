@@ -58,7 +58,16 @@ const ChatBot = () => {
     if (scrollAreaRef.current) {
       const viewport = scrollAreaRef.current.querySelector('[data-slot="scroll-area-viewport"]');
       if (viewport) {
-        viewport.scrollTop = viewport.scrollHeight;
+        // Use smooth scrolling for better UX
+        viewport.scrollTo({
+          top: viewport.scrollHeight,
+          behavior: 'smooth'
+        });
+        
+        // Fallback for browsers that don't support smooth scrolling
+        setTimeout(() => {
+          viewport.scrollTop = viewport.scrollHeight;
+        }, 50);
       }
     }
   };
@@ -66,6 +75,13 @@ const ChatBot = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Auto-scroll during typing effect
+  useEffect(() => {
+    if (typingMessageId && typingText) {
+      scrollToBottom();
+    }
+  }, [typingText, typingMessageId]);
 
   // Save messages to localStorage whenever messages change
   useEffect(() => {
@@ -154,6 +170,9 @@ const ChatBot = () => {
 
       // Add the message with empty content first
       setMessages(prev => [...prev, assistantMessage]);
+      
+      // Scroll to show the new typing message
+      setTimeout(() => scrollToBottom(), 100);
       
       // Start typing effect
       typeMessage(assistantMessageId, response, () => {
