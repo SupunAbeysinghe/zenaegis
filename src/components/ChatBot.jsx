@@ -38,9 +38,12 @@ const ChatBot = () => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [error, setError] = useState(null);
   const [showQuickMessages, setShowQuickMessages] = useState(false);
+  const [typingMessageId, setTypingMessageId] = useState(null);
+  const [typingText, setTypingText] = useState('');
   
   const scrollAreaRef = useRef(null);
   const inputRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
 
   const quickMessages = [
     "What services does ZenAegis offer?",
@@ -86,6 +89,36 @@ const ChatBot = () => {
     });
   };
 
+  // Typing effect function
+  const typeMessage = (messageId, fullText, callback) => {
+    let currentIndex = 0;
+    setTypingMessageId(messageId);
+    setTypingText('');
+    
+    const typeChar = () => {
+      if (currentIndex < fullText.length) {
+        setTypingText(fullText.substring(0, currentIndex + 1));
+        currentIndex++;
+        typingTimeoutRef.current = setTimeout(typeChar, 30); // Adjust speed here (30ms per character)
+      } else {
+        setTypingMessageId(null);
+        setTypingText('');
+        callback();
+      }
+    };
+    
+    typeChar();
+  };
+
+  // Clean up typing effect on unmount
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
@@ -110,17 +143,37 @@ const ChatBot = () => {
 
       const response = await openRouterService.sendMessage(messageHistory);
       
+      const assistantMessageId = Date.now() + 1;
       const assistantMessage = {
-        id: Date.now() + 1,
+        id: assistantMessageId,
         role: 'assistant',
-        content: response,
-        timestamp: new Date()
+        content: '', // Start with empty content
+        timestamp: new Date(),
+        isTyping: true
       };
 
+      // Add the message with empty content first
       setMessages(prev => [...prev, assistantMessage]);
+      
+      // Start typing effect
+      typeMessage(assistantMessageId, response, () => {
+        // When typing is complete, update the message with full content
+        setMessages(prev => prev.map(msg => 
+          msg.id === assistantMessageId 
+            ? { ...msg, content: response, isTyping: false }
+            : msg
+        ));
+      });
     } catch (error) {
       console.error('Chat error:', error);
       setError(error.message);
+      
+      // Clear any ongoing typing effect
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+      setTypingMessageId(null);
+      setTypingText('');
       
       const errorMessage = {
         id: Date.now() + 1,
@@ -158,6 +211,13 @@ const ChatBot = () => {
   };
 
   const clearChatHistory = () => {
+    // Clear any ongoing typing effect
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    setTypingMessageId(null);
+    setTypingText('');
+    
     const welcomeMessage = {
       id: 1,
       role: 'assistant',
@@ -270,7 +330,14 @@ const ChatBot = () => {
                           }`}
                         >
                           <div className="text-sm whitespace-pre-wrap">
-                            {formatMessageContent(message.content)}
+                            {message.id === typingMessageId && typingText ? (
+                              <>
+                                {formatMessageContent(typingText)}
+                                <span className="animate-pulse">|</span>
+                              </>
+                            ) : (
+                              formatMessageContent(message.content)
+                            )}
                           </div>
                           <div className="text-xs opacity-70 mt-1">
                             {formatTime(message.timestamp)}

@@ -7,6 +7,7 @@ This guide will help you set up and configure the AI ChatBot with OpenRouter API
 - 🤖 **Personalized ZenAegis AI Assistant** with company knowledge
 - 🛡️ **Cybersecurity Expertise** - Answers questions about ZenAegis services
 - 💬 **Real-time conversation** with context-aware responses
+- ⌨️ **Realistic Typing Effect** - AI responses appear character by character
 - 💾 **Local Storage** - Chat history persists across sessions
 - ✨ **Bold Text Formatting** - AI responses with **emphasized text**
 - ⚡ **Quick Message Templates** for common inquiries
@@ -81,6 +82,7 @@ The chatbot supports multiple AI models through OpenRouter:
 
 ### Message Features
 - **Real-time Chat**: Send messages and receive AI responses
+- **Typing Effect**: AI responses appear character by character with blinking cursor
 - **Persistent History**: Chat messages saved locally and restored on reload
 - **Bold Text Support**: AI responses with **emphasized formatting**
 - **Quick Messages**: Lightning button for common ZenAegis queries
