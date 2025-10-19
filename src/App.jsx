@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Shield, Lock, Eye, Users, CheckCircle, Menu, X, ArrowRight, Star, Globe, Zap, Terminal, Code, Activity } from 'lucide-react'
+import ChatBot from '@/components/ChatBot.jsx'
 import './App.css'
 
 // Import images
@@ -755,6 +756,9 @@ function App() {
           </div>
         </div>
       </footer>
+      
+      {/* AI ChatBot */}
+      <ChatBot />
     </div>
   )
 }
