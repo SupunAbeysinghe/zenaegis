@@ -728,7 +728,7 @@ function App() {
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-cyber-blue rounded-full animate-pulse"></div>
-                  <span>+94 71 922 90</span>
+                  <span>+94 71 922 9098</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-cyber-red rounded-full animate-pulse"></div>
